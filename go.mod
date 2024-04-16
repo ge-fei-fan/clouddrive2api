@@ -1,4 +1,4 @@
-module clouddrive2api
+module github.com/ge-fei-fan/clouddrive2api
 
 go 1.21.5
 
