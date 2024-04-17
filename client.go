@@ -75,10 +75,12 @@ func (c *Client) AddOfflineFiles(url string) ([]string, error) {
 	return res.GetResultFilePaths(), nil
 }
 
-func (c *Client) Upload(FilePath string) error {
+func (c *Client) Upload(filePath, fileName string) error {
 	var createFileResult *clouddrive.CreateFileResult
 	var file *os.File
-	fileName := filepath.Base(FilePath)
+	if fileName == "" {
+		fileName = filepath.Base(filePath)
+	}
 	defer func() {
 		if file != nil {
 			_ = file.Close()
@@ -92,7 +94,7 @@ func (c *Client) Upload(FilePath string) error {
 		return err
 	}
 	// 打开文件
-	file, err = os.Open(FilePath)
+	file, err = os.Open(filePath)
 	if err != nil {
 		return err
 	}
