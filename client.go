@@ -3,7 +3,6 @@ package clouddrive2api
 import (
 	"bufio"
 	"context"
-	"fmt"
 	"github.com/ge-fei-fan/clouddrive2api/clouddrive"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -112,11 +111,11 @@ func (c *Client) Upload(FilePath string) error {
 				break
 			}
 			// 将文件内容写入到云端文件
-			res, err := c.cd.WriteToFile(c.contextWithHeader, &clouddrive.WriteFileRequest{FileHandle: createFileResult.FileHandle, StartPos: offset, Length: uint64(n), Buffer: data[:n], CloseFile: false})
+			_, err = c.cd.WriteToFile(c.contextWithHeader, &clouddrive.WriteFileRequest{FileHandle: createFileResult.FileHandle, StartPos: offset, Length: uint64(n), Buffer: data[:n], CloseFile: false})
 			if err != nil {
 				return err
 			}
-			fmt.Println(res.GetBytesWritten())
+			//fmt.Println(res.GetBytesWritten())
 			offset += uint64(n)
 		}
 	}
