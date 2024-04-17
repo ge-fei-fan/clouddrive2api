@@ -42,7 +42,7 @@ func NewClient(addr, username, password string) *Client {
 }
 
 func (c *Client) Close() {
-	c.conn.Close()
+	_ = c.conn.Close()
 }
 
 func (c *Client) Login() error {
@@ -82,7 +82,7 @@ func (c *Client) Upload(FilePath string) error {
 	fileName := filepath.Base(FilePath)
 	defer func() {
 		if file != nil {
-			file.Close()
+			_ = file.Close()
 		}
 		if createFileResult != nil {
 			_, _ = c.cd.CloseFile(c.contextWithHeader, &clouddrive.CloseFileRequest{FileHandle: createFileResult.FileHandle})
