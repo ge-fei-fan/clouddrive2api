@@ -3,6 +3,7 @@ package clouddrive2api
 import (
 	"bufio"
 	"context"
+	"errors"
 	"github.com/ge-fei-fan/clouddrive2api/clouddrive"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -41,7 +42,9 @@ func NewClient(addr, username, password string) *Client {
 }
 
 func (c *Client) Close() {
-	_ = c.conn.Close()
+	if c.conn != nil {
+		_ = c.conn.Close()
+	}
 }
 
 func (c *Client) Login() error {
@@ -63,6 +66,17 @@ func (c *Client) Login() error {
 		"authorization": "Bearer " + r.GetToken(),
 	})
 	c.contextWithHeader = metadata.NewOutgoingContext(context.Background(), header)
+	return nil
+}
+
+func (c *Client) Set115Cookie(ck string) error {
+	res, err := c.cd.APILogin115Editthiscookie(c.contextWithHeader, &clouddrive.Login115EditthiscookieRequest{EditThiscookieString: ck})
+	if err != nil {
+		return err
+	}
+	if !res.Success {
+		return errors.New(res.ErrorMessage)
+	}
 	return nil
 }
 
@@ -122,4 +136,17 @@ func (c *Client) Upload(filePath, fileName string) error {
 		}
 	}
 	return nil
+}
+
+func (c *Client) GetSubFiles(path string, forceRefresh bool, checkExpires bool) (*clouddrive.SubFilesReply, error) {
+
+	res, err := c.cd.GetSubFiles(c.contextWithHeader, &clouddrive.ListSubFileRequest{Path: path, ForceRefresh: forceRefresh, CheckExpires: &checkExpires})
+	if err != nil {
+		return nil, err
+	}
+	subFilesReply, err := res.Recv()
+	if err != nil {
+		return nil, err
+	}
+	return subFilesReply, err
 }
