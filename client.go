@@ -80,6 +80,18 @@ func (c *Client) Set115Cookie(ck string) error {
 	return nil
 }
 
+func (c *Client) Get115QrCode(platformString string) (string, error) {
+	res, err := c.cd.APILogin115QRCode(c.contextWithHeader, &clouddrive.Login115QrCodeRequest{PlatformString: &platformString})
+	if err != nil {
+		return "", err
+	}
+	msg, err := res.Recv()
+	if err != nil {
+		return "", err
+	}
+	return msg.GetMessage(), nil
+}
+
 func (c *Client) AddOfflineFiles(url string) ([]string, error) {
 	res, err := c.cd.AddOfflineFiles(c.contextWithHeader, &clouddrive.AddOfflineFileRequest{Urls: url, ToFolder: c.UploadFolder})
 	if err != nil {
