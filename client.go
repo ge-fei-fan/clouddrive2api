@@ -23,8 +23,8 @@ type Client struct {
 	contextWithHeader context.Context
 	username          string
 	password          string
-	offlineFolder     string
-	uploadFolder      string
+	OfflineFolder     string
+	UploadFolder      string
 }
 
 func NewClient(addr, username, password string) *Client {
@@ -35,8 +35,8 @@ func NewClient(addr, username, password string) *Client {
 		contextWithHeader: nil,
 		username:          username,
 		password:          password,
-		offlineFolder:     "/115/云下载",
-		uploadFolder:      "/115/tg",
+		OfflineFolder:     "/115/云下载",
+		UploadFolder:      "/115/tg",
 	}
 	return &c
 }
@@ -81,7 +81,7 @@ func (c *Client) Set115Cookie(ck string) error {
 }
 
 func (c *Client) AddOfflineFiles(url string) ([]string, error) {
-	res, err := c.cd.AddOfflineFiles(c.contextWithHeader, &clouddrive.AddOfflineFileRequest{Urls: url, ToFolder: c.offlineFolder})
+	res, err := c.cd.AddOfflineFiles(c.contextWithHeader, &clouddrive.AddOfflineFileRequest{Urls: url, ToFolder: c.UploadFolder})
 	if err != nil {
 		return nil, err
 	}
@@ -103,7 +103,7 @@ func (c *Client) Upload(filePath, fileName string) error {
 			_, _ = c.cd.CloseFile(c.contextWithHeader, &clouddrive.CloseFileRequest{FileHandle: createFileResult.FileHandle})
 		}
 	}()
-	createFileResult, err := c.cd.CreateFile(c.contextWithHeader, &clouddrive.CreateFileRequest{ParentPath: c.uploadFolder, FileName: fileName})
+	createFileResult, err := c.cd.CreateFile(c.contextWithHeader, &clouddrive.CreateFileRequest{ParentPath: c.UploadFolder, FileName: fileName})
 	if err != nil {
 		return err
 	}
