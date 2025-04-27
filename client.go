@@ -27,7 +27,7 @@ type Client struct {
 	UploadFolder      string
 }
 
-func NewClient(addr, username, password string) *Client {
+func NewClient(addr, username, password, offlineFolder, uploadFolder string) *Client {
 	c := Client{
 		addr:              addr,
 		conn:              nil,
@@ -35,8 +35,8 @@ func NewClient(addr, username, password string) *Client {
 		contextWithHeader: nil,
 		username:          username,
 		password:          password,
-		OfflineFolder:     "/115/云下载",
-		UploadFolder:      "/115/tg",
+		OfflineFolder:     offlineFolder,
+		UploadFolder:      uploadFolder,
 	}
 	return &c
 }
