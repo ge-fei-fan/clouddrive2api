@@ -93,12 +93,23 @@ func (c *Client) Get115QrCode(platformString string) (string, error) {
 }
 
 func (c *Client) AddOfflineFiles(url string) ([]string, error) {
-	res, err := c.cd.AddOfflineFiles(c.contextWithHeader, &clouddrive.AddOfflineFileRequest{Urls: url, ToFolder: c.UploadFolder})
+	res, err := c.cd.AddOfflineFiles(c.contextWithHeader, &clouddrive.AddOfflineFileRequest{Urls: url, ToFolder: c.OfflineFolder})
 	if err != nil {
 		return nil, err
 	}
 
 	return res.GetResultFilePaths(), nil
+}
+func (c *Client) ListAllOfflineFiles(cloudName, cloudAccountId string, page uint32) ([]*clouddrive.OfflineFile, error) {
+	res, err := c.cd.ListAllOfflineFiles(c.contextWithHeader, &clouddrive.OfflineFileListAllRequest{
+		CloudName:      cloudName,
+		CloudAccountId: cloudAccountId,
+		Page:           page,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return res.GetOfflineFiles(), nil
 }
 
 func (c *Client) Upload(filePath, fileName string) error {
